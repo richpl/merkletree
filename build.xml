@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="Merkle">
+    
+	<!-- Following property will need to be modified to 
+	     reflect local installation path -->
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    
+	<path id="Merkle.classpath">
+        <pathelement location="bin"/>
+		<!-- Following will need to be modified to reflect local
+		     installation paths -->
+        <pathelement location="../../Libraries/junit-4.11.jar"/>
+        <pathelement location="../../Libraries/hamcrest-core-1.3.jar"/>
+    </path>
+    
+	<target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    
+	<target name="clean">
+        <delete dir="bin"/>
+    </target>
+    
+	<target depends="clean" name="cleanall"/>
+    
+	<target depends="build-subprojects,build-project" name="build"/>
+    
+	<target name="build-subprojects"/>
+	  <target depends="init" name="build-project">
+          <echo message="${ant.project.name}: ${ant.file}"/>
+          <javac debug="true" debuglevel="${debuglevel}" 
+          	     destdir="bin" includeantruntime="false" 
+          	     source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="Merkle.classpath"/>
+          </javac>
+    </target>
+    
+	<target name="LeafTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="merkletree.LeafTest" todir="${junit.output.dir}"/>
+            <classpath refid="Merkle.classpath"/>
+        </junit>
+    </target>
+    
+	<target name="MerkleTreeTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="merkletree.MerkleTreeTest" todir="${junit.output.dir}"/>
+            <classpath refid="Merkle.classpath"/>
+        </junit>
+    </target>
+    
+	<target name="TreeBuilder">
+        <java classname="merkletree.TreeBuilder" failonerror="true" fork="yes">
+            <classpath refid="Merkle.classpath"/>
+        </java>
+    </target>
+    
+</project>
